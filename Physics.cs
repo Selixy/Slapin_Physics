@@ -8,11 +8,15 @@ namespace Physics
         public Move move;
         public Gravity gravity;
         public PhysicState physicState;
+
+
         public Vector2 normalWall;
         public Vector2 velocity;
         public bool isStatic;
+
         public static float marginDetection = 0.01f;
         public static float velocityMargin = 0.005f;
+        public static float dampingBounce = 0.9f;
 
         public Move GetInstanceMove() { return move; }
         public Gravity GetInstanceGravity() { return gravity; }
@@ -37,7 +41,10 @@ namespace Physics
             {
                 isStatic = true;
             }
-            StateManager.StateControl(this);
+            if (physicState != PhysicState.IsInAir)
+            {
+                StateManager.StateControl(this);
+            }
         }
 
         public void CollisionEvent(RaycastHit2D hit)

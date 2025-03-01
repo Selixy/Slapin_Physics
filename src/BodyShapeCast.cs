@@ -66,10 +66,37 @@ namespace Physics
         /// </summary>
         private static RaycastHit2D PerformOptimizedCast(BoxCollider2D box, Vector2 castVector, GameObject ignoreObject)
         {
+            // Calcul des informations de base
             float distance = castVector.magnitude;
             Vector2 direction = castVector.normalized;
             float angle = box.transform.eulerAngles.z;
-            RaycastHit2D[] hits = Physics2D.BoxCastAll(box.bounds.center, box.size, angle, direction, distance);
+
+            // On récupère la marge
+            float margin = Physic.marginDetection;
+
+            // Convertir box.bounds.center (Vector3) en Vector2, puis ajouter la marge dans la direction du cast
+            Vector2 castOrigin = (Vector2)box.bounds.center + direction * margin;
+
+            // Réduire la taille du box de 2 fois la marge pour garder un décalage symétrique
+            Vector2 castSize = new Vector2(
+                box.size.x - 2f * margin,
+                box.size.y - 2f * margin
+            );
+
+            // Réduire la distance de la même valeur pour ne pas pousser trop le cast
+            float castDistance = distance - margin;
+            if (castDistance < 0f)
+            {
+                castDistance = 0f;
+            }
+
+            // Empêche la taille de devenir négative au cas où la marge serait supérieure
+            // à la moitié de la dimension d'origine
+            castSize.x = Mathf.Max(castSize.x, 0f);
+            castSize.y = Mathf.Max(castSize.y, 0f);
+
+            // Effectue le BoxCast avec les nouvelles dimensions et positions
+            RaycastHit2D[] hits = Physics2D.BoxCastAll(castOrigin, castSize, angle, direction, castDistance);
             return GetFirstValidHit(hits, ignoreObject);
         }
 

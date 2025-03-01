@@ -81,6 +81,7 @@ namespace Physics
             if (hitRight.collider != null)
             {
                 physic.physicState = PhysicState.IsOnWall;
+                physic.gravity.StartWallGravity();
                 return;
             }
 
@@ -90,6 +91,7 @@ namespace Physics
             if (hitLeft.collider != null)
             {
                 physic.physicState = PhysicState.IsOnWall;
+                physic.gravity.StartWallGravity();
                 return;
             }
 
@@ -99,11 +101,14 @@ namespace Physics
             if (hitUp.collider != null)
             {
                 physic.physicState = PhysicState.IsOnCeiling;
+                physic.gravity.StartGravity();
                 return;
             }
 
             // Si aucune collision n'est détectée, l'état est en l'air
             physic.physicState = PhysicState.IsInAir;
+            physic.gravity.StartGravity();
+            
         }
     }
 }

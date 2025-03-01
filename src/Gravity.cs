@@ -9,7 +9,7 @@ namespace Physics
         public float gravityScale = 1f;
 
         private Coroutine gravityCoroutine;
-
+        private Coroutine WallGravityCoroutine;
         public Physic physic;
         public MonoBehaviour behaviour;
 
@@ -26,8 +26,19 @@ namespace Physics
 
         public void StartGravity()
         {
-            gravityCoroutine = behaviour.StartCoroutine(ApplyGravity());
+            if (gravityCoroutine == null)
+            {
+                gravityCoroutine = behaviour.StartCoroutine(ApplyGravity());
+            }
         }
+        public void StartWallGravity()
+        {
+            if (gravityCoroutine == null)
+            {
+                WallGravityCoroutine = behaviour.StartCoroutine(ApplyWallGravity());
+            }
+        }
+
         public void StopGravity()
         {
             if (gravityCoroutine != null)
@@ -37,10 +48,26 @@ namespace Physics
                 physic.velocity.y = 0;
             }
         }
+        public void StopWallGravity()
+        {
+            if (gravityCoroutine != null)
+            {
+                behaviour.StopCoroutine(WallGravityCoroutine);
+                WallGravityCoroutine = null;
+            }
+        }
 
 
 
         private IEnumerator ApplyGravity()
+        {
+            while (true)
+            {
+                physic.velocity.y -= gravity * Time.deltaTime * gravityScale;
+                yield return null;
+            }
+        }
+        private IEnumerator ApplyWallGravity()
         {
             while (true)
             {

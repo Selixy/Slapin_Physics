@@ -28,12 +28,15 @@ namespace Physics
                 move.y = hit.point.y - position.y + colliderSize.y * hit.normal.y;
 
                 physic.CollisionEvent(hit);
+                VelocityRecalculateInCollision(hit);
+
             }
 
             position.x += move.x;
             position.y += move.y;
 
             gameObject.transform.position = position;
+
         }
 
         public Vector2 GetColliderSize()
@@ -44,6 +47,13 @@ namespace Physics
                 return collider.bounds.size;
             }
             return Vector2.zero;
+        }
+
+        private void VelocityRecalculateInCollision(RaycastHit2D hit)
+        {
+            physic.velocity = Vector2.Reflect(physic.velocity, hit.normal);
+            physic.velocity *= Physic.dampingBounce;
+
         }
     }
 }
