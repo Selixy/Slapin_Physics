@@ -4,62 +4,56 @@ namespace Physics
 {
     public class Physic
     {
-        public GameObject gameObject;
-        public Move move;
-        public Gravity gravity;
-        public PhysicState physicState;
+        // Instances
+        private Gravity gravity;
+        private Friction friction;
+        private Dumping dumping;
 
+        // references
+        public GameObject gameObject{get; private set;}
 
-        public Vector2 normalWall;
-        public Vector2 velocity;
-        public bool isStatic;
+        // Variables accessibles
+        public Vector2 velocity{get; internal set;}
+        public void AddVelocity(Vector2 addVelocity) { this.velocity += addVelocity; }
 
-        public static float marginDetection = 0.01f;
-        public static float velocityMargin = 0.005f;
-        public static float dampingBounce = 0.9f;
-
-        public Move GetInstanceMove() { return move; }
-        public Gravity GetInstanceGravity() { return gravity; }
 
         // Constructor
         public Physic(GameObject gameObject)
         {
+            // references
             this.gameObject = gameObject;
-            move = new Move(this, gameObject);
-            gravity = new Gravity(this, gameObject.GetComponent<MonoBehaviour>());
-            gravity.StartGravity();
+
+            //AddRigidbody2D();
+
+            // Instances
+            dumping = new Dumping(this);
+            gravity = new Gravity(this);
+            friction = new Friction(this);
         }
 
         public void Update()
         {
-            if (Mathf.Abs(velocity.y) > velocityMargin || Mathf.Abs(velocity.x) > velocityMargin)
-            {
-                isStatic = false;
-                move.AddMove(velocity);
+            friction.Update();
+            dumping.Update();
+            gravity.Update();
+
+            // Apply velocity
+            RaycastHit2D hit;
+            (velocity, hit) = Move.Apply(gameObject, velocity);
+            if (hit.normal.y > 0.9) {
+                gravity.isGravityActive = false;
             }
-            else
-            {
-                isStatic = true;
-            }
-            if (physicState != PhysicState.IsInAir)
-            {
-                StateManager.StateControl(this);
-            }
+            //Move.ResolveRepulsion(gameObject);
+
+            Debug.DrawRay(gameObject.transform.position, velocity, Color.red);
+            //Debug.Log(velocity);
         }
 
-        public void CollisionEvent(RaycastHit2D hit)
-        {
-            if (hit.collider != null)
-            {
-                physicState = StateManager.SetState(hit.normal);
-                if (physicState == PhysicState.IsGrounded)
-                {
-                    gravity.StopGravity();
-                }
-                else if (physicState == PhysicState.IsOnWall)
-                {
-                    normalWall = hit.normal;
-                }
+        private void AddRigidbody2D() {
+            Rigidbody2D rb = gameObject.GetComponent<Rigidbody2D>();
+            if (rb == null) {
+                rb = gameObject.AddComponent<Rigidbody2D>();
+                rb.bodyType = RigidbodyType2D.Kinematic;
             }
         }
     }

@@ -2,58 +2,31 @@ using UnityEngine;
 
 namespace Physics
 {
-    public class Move
+    public static class Move
     {
-        public GameObject gameObject;
-        public Physic physic;
-
-        public Move(Physic physic, GameObject gameObject)
+        public static (Vector2 velocity, RaycastHit2D hit) Apply(GameObject gameObject, Vector2 velocity)
         {
-            this.gameObject = gameObject;
-            this.physic = physic;
-        }
+            // get position
+            Vector2 position;
+            position.x = gameObject.transform.position.x;
+            position.y = gameObject.transform.position.y;
+            // set frame velocity
+            Vector2 frameVelocity = velocity * Time.deltaTime;
 
-        public void AddMove(Vector2 velocity)
-        {
-            Vector2 move = velocity * Time.deltaTime;
-            Vector3 position = gameObject.transform.position;
-
-
-            RaycastHit2D hit = BodyShapeCast.ShapeCast(move, gameObject);
-            if (hit.collider != null)
-            {
-                Vector2 colliderSize = GetColliderSize() * 0.5f;
-
-                move.x = hit.point.x - position.x + colliderSize.x * hit.normal.x;
-                move.y = hit.point.y - position.y + colliderSize.y * hit.normal.y;
-
-                physic.CollisionEvent(hit);
-                VelocityRecalculateInCollision(hit);
-
+            // ShapCast
+            RaycastHit2D hit = ShapCast.Cast(gameObject, frameVelocity);
+            if (hit.collider != null) {
+                frameVelocity = frameVelocity.normalized * hit.distance;
+                velocity = frameVelocity;
             }
 
-            position.x += move.x;
-            position.y += move.y;
+            // apply velocity
+            position += frameVelocity;
 
-            gameObject.transform.position = position;
+            // apply position
+            gameObject.transform.position = new Vector3(position.x, position.y, gameObject.transform.position.z);
 
-        }
-
-        public Vector2 GetColliderSize()
-        {
-            Collider2D collider = gameObject.GetComponent<Collider2D>();
-            if (collider != null)
-            {
-                return collider.bounds.size;
-            }
-            return Vector2.zero;
-        }
-
-        private void VelocityRecalculateInCollision(RaycastHit2D hit)
-        {
-            physic.velocity = Vector2.Reflect(physic.velocity, hit.normal);
-            physic.velocity *= Physic.dampingBounce;
-
+            return (velocity, hit);
         }
     }
 }

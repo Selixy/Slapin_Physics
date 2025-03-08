@@ -1,78 +1,32 @@
 using UnityEngine;
-using System.Collections;
 
 namespace Physics
 {
     public class Gravity
     {
-        public float gravity = 9.81f;
-        public float gravityScale = 1f;
+        private float gravity = 9.81f;
+        public float gravityFactor = 1f;
+        public bool isGravityActive = true;
 
-        private Coroutine gravityCoroutine;
-        private Coroutine WallGravityCoroutine;
-        public Physic physic;
-        public MonoBehaviour behaviour;
+        // references
+        private Physic physic;
 
-
-
-
-
-        public Gravity(Physic physic, MonoBehaviour behaviour)
+        // constructor
+        public Gravity(Physic physic)
         {
             this.physic = physic;
-            this.behaviour = behaviour;
         }
 
-
-        public void StartGravity()
+        public void Update()
         {
-            if (gravityCoroutine == null)
+            if (isGravityActive)
             {
-                gravityCoroutine = behaviour.StartCoroutine(ApplyGravity());
+                float gravityForce = -gravity * gravityFactor * Time.deltaTime;
+                physic.AddVelocity(new Vector2(0, gravityForce));
+                //Debug.Log("Gravity is active");
             }
-        }
-        public void StartWallGravity()
-        {
-            if (gravityCoroutine == null)
-            {
-                WallGravityCoroutine = behaviour.StartCoroutine(ApplyWallGravity());
-            }
-        }
-
-        public void StopGravity()
-        {
-            if (gravityCoroutine != null)
-            {
-                behaviour.StopCoroutine(gravityCoroutine);
-                gravityCoroutine = null;
-                physic.velocity.y = 0;
-            }
-        }
-        public void StopWallGravity()
-        {
-            if (gravityCoroutine != null)
-            {
-                behaviour.StopCoroutine(WallGravityCoroutine);
-                WallGravityCoroutine = null;
-            }
-        }
-
-
-
-        private IEnumerator ApplyGravity()
-        {
-            while (true)
-            {
-                physic.velocity.y -= gravity * Time.deltaTime * gravityScale;
-                yield return null;
-            }
-        }
-        private IEnumerator ApplyWallGravity()
-        {
-            while (true)
-            {
-                physic.velocity.y -= gravity * Time.deltaTime * gravityScale;
-                yield return null;
+            else {
+                //Debug.Log("Gravity is not active");
             }
         }
     }
