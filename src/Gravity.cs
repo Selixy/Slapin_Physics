@@ -5,7 +5,7 @@ namespace Physics
     public class Gravity
     {
         private float gravity = 9.81f;
-        public float gravityFactor = 1f;
+        public float gravityFactor = 5f;
         public bool isGravityActive = true;
 
         // references
@@ -19,14 +19,10 @@ namespace Physics
 
         public void Update()
         {
-            if (isGravityActive)
+            if (isGravityActive && physic.collisionBuffer.state != State.OnGround)
             {
                 float gravityForce = -gravity * gravityFactor * Time.deltaTime;
                 physic.AddVelocity(new Vector2(0, gravityForce));
-                //Debug.Log("Gravity is active");
-            }
-            else {
-                //Debug.Log("Gravity is not active");
             }
         }
     }

@@ -8,9 +8,10 @@ namespace Physics
         private Gravity gravity;
         private Friction friction;
         private Dumping dumping;
+        public CollisionBuffer collisionBuffer {get; private set;}
 
         // references
-        public GameObject gameObject{get; private set;}
+        public GameObject gameObject;
 
         // Variables accessibles
         public Vector2 velocity{get; internal set;}
@@ -26,9 +27,10 @@ namespace Physics
             //AddRigidbody2D();
 
             // Instances
-            dumping = new Dumping(this);
-            gravity = new Gravity(this);
+            collisionBuffer = new CollisionBuffer(gameObject);
             friction = new Friction(this);
+            gravity = new Gravity(this);
+            dumping = new Dumping(this);
         }
 
         public void Update()
@@ -40,13 +42,15 @@ namespace Physics
             // Apply velocity
             RaycastHit2D hit;
             (velocity, hit) = Move.Apply(gameObject, velocity);
-            if (hit.normal.y > 0.9) {
-                gravity.isGravityActive = false;
+            // Add collision to buffer if there is a collider
+            if(hit.collider != null) {
+                collisionBuffer.AddCollision(hit);
             }
-            //Move.ResolveRepulsion(gameObject);
 
-            Debug.DrawRay(gameObject.transform.position, velocity, Color.red);
-            //Debug.Log(velocity);
+            collisionBuffer.Update();
+
+            Debug.Log("velocity: " + velocity);
+
         }
 
         private void AddRigidbody2D() {
