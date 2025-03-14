@@ -14,6 +14,7 @@ namespace Physics
         public GameObject gameObject;
 
         // Variables accessibles
+        public bool isBounce {get; private set;}
         public State state {get{return collisionBuffer.state;}}
         public Vector2 velocity{get; internal set;}
         public void AddVelocity(Vector2 addVelocity) { this.velocity += addVelocity; }
@@ -24,8 +25,6 @@ namespace Physics
         {
             // references
             this.gameObject = gameObject;
-
-            //AddRigidbody2D();
 
             // Instances
             collisionBuffer = new CollisionBuffer(gameObject);
@@ -42,8 +41,8 @@ namespace Physics
 
             // Apply velocity
             RaycastHit2D hit;
-            bool isBounce;
-            (velocity, hit, isBounce) = Move.Apply(gameObject, velocity);
+            this.isBounce = false;
+            (velocity, hit, this.isBounce) = Move.Apply(gameObject, velocity);
             // Add collision to buffer if there is a collider
             if(hit.collider != null) {
                 collisionBuffer.AddCollision(hit);

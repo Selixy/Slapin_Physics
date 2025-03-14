@@ -4,6 +4,7 @@ namespace Physics
 {
     public static class Move
     {
+        private static float bounceTolerance = 100f;
         public static (Vector2 velocity, RaycastHit2D hit, bool isBounce) Apply(GameObject gameObject, Vector2 velocity)
         {
             // Variables
@@ -27,7 +28,8 @@ namespace Physics
                 Vector2 displacementAfterCollision = frameVelocity - displacementBeforeCollision;
 
                 // Si la vitesse est supérieure à 10, réfléchir le déplacement restant par rapport à la normale
-                if (frameVelocity.magnitude > 100f) {
+                if (frameVelocity.magnitude > bounceTolerance) {
+                    displacementAfterCollision *= StaticDefinition.dumpingBonk;
                     displacementAfterCollision = Vector2.Reflect(displacementAfterCollision, hit.normal);
                     isBounce = true;
                 }

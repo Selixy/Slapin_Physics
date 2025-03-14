@@ -4,8 +4,8 @@ namespace Physics
 {
     public class Gravity
     {
-        private float gravity = 9.81f;
-        public float gravityFactor = 5f;
+        private float gravity = 70f;
+        public float gravityFactor = 1f;
         public bool isGravityActive = true;
 
         // references
@@ -15,6 +15,7 @@ namespace Physics
         public Gravity(Physic physic)
         {
             this.physic = physic;
+            this.gravity = StaticDefinition.gravity;
         }
 
         public void Update()

@@ -4,13 +4,8 @@ namespace Physics
 {
     public class Dumping
     {
-        // dumping factor definition
+        // internal variables
         private float currentViscousDamping;
-
-        // dumping factor definition
-        private static float viscousAirDamping = 1f;
-        private static float viscousWaterDamping = 1f;
-        private static float dumpingBonk = 1f;
 
         // references
         private Physic physic;
@@ -19,7 +14,7 @@ namespace Physics
         public Dumping(Physic physic)
         {
             this.physic = physic;
-            currentViscousDamping = viscousAirDamping;
+            currentViscousDamping = StaticDefinition.viscousAirDamping;
         }
 
         public void Update()
@@ -29,26 +24,27 @@ namespace Physics
 
         public void DumpingBonk()
         {
-            physic.velocity *= dumpingBonk;
+            physic.velocity *= StaticDefinition.dumpingBonk;
         }
 
         private void ViscousDamping()
         {
-            // apply viscous damping
-            physic.velocity *= currentViscousDamping;
+            // Ajuste l'amortissement viscous selon le temps écoulé
+            physic.velocity *= Mathf.Pow(currentViscousDamping, Time.deltaTime);
         }
+
 
         public void SetViscousDamping(int Indice = 0)
         {
             switch (Indice) {
                 case 0:
-                    currentViscousDamping = viscousAirDamping;
+                    currentViscousDamping = StaticDefinition.viscousAirDamping;
                     break;
                 case 1:
-                    currentViscousDamping = viscousWaterDamping;
+                    currentViscousDamping = StaticDefinition.viscousWaterDamping;
                     break;
                 default:
-                    currentViscousDamping = viscousAirDamping;
+                    currentViscousDamping = StaticDefinition.viscousAirDamping;
                     break;
             }
         }

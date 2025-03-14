@@ -28,10 +28,10 @@ namespace Physics
             this.gameObject = gameObject;
 
             // definition des coefficients de friction et adherence
-            defaultFriction = Surfaces.defaultFriction;
-            defaultAdherence = Surfaces.defaultAdherence;
-            iceFriction = Surfaces.iceFriction;
-            iceAdherence = Surfaces.iceAdherence;
+            defaultFriction = StaticDefinition.defaultFriction;
+            defaultAdherence = StaticDefinition.defaultAdherence;
+            iceFriction = StaticDefinition.iceFriction;
+            iceAdherence = StaticDefinition.iceAdherence;
         }
 
 

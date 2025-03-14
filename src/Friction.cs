@@ -32,7 +32,7 @@ namespace Physics
                 frictionX += Mathf.Abs(normal.y) * frictionForce;
                 frictionY += Mathf.Abs(normal.x) * frictionForce;
             }
-            frictionY *= Surfaces.VerticalFactor;
+            frictionY *= StaticDefinition.VerticalFactor;
 
             // Récupérer la vitesse actuelle
             Vector2 currentVelocity = physic.velocity;
