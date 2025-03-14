@@ -18,7 +18,8 @@ namespace Physics
         public State state {get{return collisionBuffer.state;}}
         public Vector2 velocity{get; internal set;}
         public void AddVelocity(Vector2 addVelocity) { this.velocity += addVelocity; }
-
+        public void SetVerticalVelocity(float velocity) { this.velocity = new Vector2(this.velocity.x, velocity); }
+        public void SetVelocity(Vector2 velocity) { this.velocity = velocity; }
 
         // Constructor
         public Physic(GameObject gameObject)
@@ -50,8 +51,6 @@ namespace Physics
 
             collisionBuffer.Update();
 
-
         }
-
     }
 }
