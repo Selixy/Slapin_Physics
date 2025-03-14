@@ -18,7 +18,7 @@ namespace Physics
             Vector2 frameVelocity = velocity * Time.deltaTime;
 
             // Effectuer la ShapCast
-            RaycastHit2D hit = ShapCast.Cast(gameObject, frameVelocity, 0.05f);
+            RaycastHit2D hit = ShapCast.Cast(gameObject, frameVelocity, 0.0f);
             // Vérifier que la collision concerne bien une surface entravant le déplacement
             if (hit.collider != null && Vector2.Dot(frameVelocity, hit.normal) < 0) {
                 // Calculer le déplacement jusqu'au premier contact

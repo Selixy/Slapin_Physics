@@ -5,18 +5,16 @@ namespace Physics
 {
     public class CollisionBuffer
     {
-        // definition des coefficients de friction et adherence
+        // Définition des coefficients de friction et d'adhérence
         private static float defaultFriction = 0f;
         private static float defaultAdherence = 0f;
         private static float iceFriction = 0f;
         private static float iceAdherence = 0f;
 
-
-        public State state{get; private set;}
+        public State state { get; private set; }
 
         private List<CollisionData> collisionList;
         private GameObject gameObject;
-
 
         // Propriété pour accéder en lecture seule à la liste des collisions
         public List<CollisionData> CollisionList => collisionList;
@@ -27,17 +25,17 @@ namespace Physics
             collisionList = new List<CollisionData>();
             this.gameObject = gameObject;
 
-            // definition des coefficients de friction et adherence
+            // Définition des coefficients de friction et d'adhérence
             defaultFriction = StaticDefinition.defaultFriction;
             defaultAdherence = StaticDefinition.defaultAdherence;
             iceFriction = StaticDefinition.iceFriction;
             iceAdherence = StaticDefinition.iceAdherence;
         }
 
-
         private (float friction, float adherence) GetFrictionAdherenceFromTag(string tag)
         {
-            switch(tag) {
+            switch(tag)
+            {
                 case "Ice":
                     return (iceFriction, iceAdherence);
                 default:
@@ -55,6 +53,21 @@ namespace Physics
             collisionList.Add(collision);
         }
 
+        // Fonction pour supprimer les collisions en double (même normale)
+        private void RemoveDuplicateCollisions()
+        {
+            // On parcourt la liste et supprime les collisions dont la normale est identique
+            for (int i = 0; i < collisionList.Count; i++)
+            {
+                for (int j = collisionList.Count - 1; j > i; j--)
+                {
+                    if(collisionList[j].Normal == collisionList[i].Normal)
+                    {
+                        collisionList.RemoveAt(j);
+                    }
+                }
+            }
+        }
 
         private void SetState()
         {
@@ -64,9 +77,10 @@ namespace Physics
             float wallThreshold = 0.1f;
 
             // Vérifier la présence d'une collision orientée vers le haut
-            foreach(CollisionData collision in collisionList)
+            foreach (CollisionData collision in collisionList)
             {
-                if(collision.Normal.y > 1f - groundThreshold) {
+                if (collision.Normal.y > 1f - groundThreshold)
+                {
                     foundGround = true;
                     break;
                 }
@@ -74,10 +88,12 @@ namespace Physics
 
             // Si aucune collision orientée vers le haut n'a été trouvée,
             // alors on cherche une collision orientée horizontalement
-            if(!foundGround) {
-                foreach(CollisionData collision in collisionList)
+            if (!foundGround)
+            {
+                foreach (CollisionData collision in collisionList)
                 {
-                    if(Mathf.Abs(collision.Normal.x) > 1f - wallThreshold) {
+                    if (Mathf.Abs(collision.Normal.x) > 1f - wallThreshold)
+                    {
                         foundWall = true;
                         break;
                     }
@@ -85,13 +101,16 @@ namespace Physics
             }
 
             // Déterminer l'état en fonction des collisions trouvées
-            if(foundGround) {
+            if (foundGround)
+            {
                 state = State.OnGround;
             }
-            else if(foundWall) {
+            else if (foundWall)
+            {
                 state = State.OnWall;
             }
-            else {
+            else
+            {
                 state = State.InAir;
             }
         }
@@ -112,10 +131,12 @@ namespace Physics
                 RaycastHit2D hit = ShapCast.Cast(gameObject, collisionDirection);
 
                 // Si le raycast ne touche plus aucun collider, supprimer la collision
-                if (hit.collider == null) {
+                if (hit.collider == null)
+                {
                     collisionList.RemoveAt(i);
                 }
-                else {
+                else
+                {
                     (float friction, float adherence) = GetFrictionAdherenceFromTag(hit.collider.tag);
                     collision.Friction = friction;
                     collision.Adherence = adherence;
@@ -123,8 +144,11 @@ namespace Physics
                 }
             }
 
+            // Supprimer les collisions en double (même normale)
+            RemoveDuplicateCollisions();
+
+
             SetState();
-            Debug.Log("State: " + state);
         }
     }
 }

@@ -50,7 +50,6 @@ namespace Physics
 
             collisionBuffer.Update();
 
-            Debug.Log("velocity: " + velocity);
 
         }
 
