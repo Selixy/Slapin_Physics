@@ -4,10 +4,8 @@ namespace Physics
 {
     public static class ShapCast
     {
-        // Marge utilisée pour réduire la taille effective en tangent et décaler l'origine.
-        private static float margin = 0.05f;
 
-        public static RaycastHit2D Cast(GameObject obj, Vector2 vectorCast)
+        public static RaycastHit2D Cast(GameObject obj, Vector2 vectorCast, float margin = 0f)
         {
             BoxCollider2D boxCollider = obj.GetComponent<BoxCollider2D>();
             if (boxCollider == null) {
@@ -17,7 +15,7 @@ namespace Physics
 
             Vector2 objectPosition = (Vector2)obj.transform.position;
             Vector2 adjustedOrigin = GetAdjustedOrigin(boxCollider, objectPosition, vectorCast);
-            Vector2 effectiveSize = GetEffectiveSize(boxCollider, vectorCast);
+            Vector2 effectiveSize = GetEffectiveSize(boxCollider, vectorCast, margin);
 
             float angle = obj.transform.eulerAngles.z;
             Vector2 direction = vectorCast.normalized;
@@ -47,10 +45,10 @@ namespace Physics
         private static Vector2 GetAdjustedOrigin(BoxCollider2D collider, Vector2 objectPosition, Vector2 vectorCast)
         {
             Vector2 origin = objectPosition + collider.offset;
-            return origin + vectorCast.normalized * (margin * 0.5f);
+            return origin + vectorCast.normalized *  0.025f;
         }
 
-        private static Vector2 GetEffectiveSize(BoxCollider2D collider, Vector2 vectorCast)
+        private static Vector2 GetEffectiveSize(BoxCollider2D collider, Vector2 vectorCast, float margin = 0f)
         {
             Vector2 effectiveSize = collider.size;
             if (Mathf.Abs(vectorCast.x) >= Mathf.Abs(vectorCast.y)) {

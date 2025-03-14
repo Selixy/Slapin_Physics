@@ -14,6 +14,7 @@ namespace Physics
         public GameObject gameObject;
 
         // Variables accessibles
+        public State state {get{return collisionBuffer.state;}}
         public Vector2 velocity{get; internal set;}
         public void AddVelocity(Vector2 addVelocity) { this.velocity += addVelocity; }
 
@@ -41,7 +42,8 @@ namespace Physics
 
             // Apply velocity
             RaycastHit2D hit;
-            (velocity, hit) = Move.Apply(gameObject, velocity);
+            bool isBounce;
+            (velocity, hit, isBounce) = Move.Apply(gameObject, velocity);
             // Add collision to buffer if there is a collider
             if(hit.collider != null) {
                 collisionBuffer.AddCollision(hit);
@@ -53,12 +55,5 @@ namespace Physics
 
         }
 
-        private void AddRigidbody2D() {
-            Rigidbody2D rb = gameObject.GetComponent<Rigidbody2D>();
-            if (rb == null) {
-                rb = gameObject.AddComponent<Rigidbody2D>();
-                rb.bodyType = RigidbodyType2D.Kinematic;
-            }
-        }
     }
 }
