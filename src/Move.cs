@@ -18,7 +18,8 @@ namespace Physics
             Vector2 frameVelocity = velocity * Time.deltaTime;
 
             // Effectuer la ShapCast
-            RaycastHit2D hit = ShapCast.Cast(gameObject, frameVelocity, 0.0f);
+            Vector2 originOffset = new Vector2(0.0f, 0.0f);
+            RaycastHit2D hit = ShapCast.Cast(gameObject, frameVelocity, originOffset, 0.0f);
             // Vérifier que la collision concerne bien une surface entravant le déplacement
             if (hit.collider != null && Vector2.Dot(frameVelocity, hit.normal) < 0) {
                 // Calculer le déplacement jusqu'au premier contact
@@ -54,6 +55,36 @@ namespace Physics
 
 
             return (velocity, hit, isBounce);
+        }
+
+        private static (Vector2 displacementAfterCollision, Vector2 displacementBeforeCollision) RecursiveCorection(
+            GameObject gameObject, 
+            Vector2 displacementAfterCollision, 
+            Vector2 displacementBeforeCollision, 
+            int recursionCount = 0)
+        {
+            // Vérifier si on a atteint la limite de récursion ou si le déplacement restant est négligeable
+            if (recursionCount >= 1)
+            {
+                return (Vector2.zero, displacementBeforeCollision);
+            }
+
+            RaycastHit2D hit = ShapCast.Cast(gameObject, displacementAfterCollision, displacementBeforeCollision, 0.0f);
+            if (hit.collider != null && Vector2.Dot(displacementAfterCollision, hit.normal) < 0) {
+                // Calculer le déplacement jusqu'au point de collision
+                displacementBeforeCollision += displacementAfterCollision.normalized * hit.distance;
+                displacementAfterCollision -= displacementAfterCollision.normalized * hit.distance;
+
+                // Projection sur la tangente (calcul de la tangente : ici on échange les composantes)
+                Vector2 tangent = new Vector2(hit.normal.y, hit.normal.x);
+                displacementAfterCollision = Vector2.Dot(displacementAfterCollision, tangent.normalized) * tangent.normalized;
+
+                // Appel récursif en incrémentant le compteur
+                return RecursiveCorection(gameObject, displacementAfterCollision, displacementBeforeCollision, recursionCount + 1);
+            }
+            else {
+                return (displacementAfterCollision, displacementBeforeCollision);
+            }
         }
     }
 }

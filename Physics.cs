@@ -12,6 +12,7 @@ namespace Physics
 
         // references
         public GameObject gameObject;
+        private float velocityTrashhold = 0.01f;
 
         // Variables accessibles
         public bool isBounce {get; private set;}
@@ -22,10 +23,11 @@ namespace Physics
         public void SetVelocity(Vector2 velocity) { this.velocity = velocity; }
 
         // Constructor
-        public Physic(GameObject gameObject)
+        public Physic(GameObject gameObject, float velocityTrashhold = 0.01f)
         {
-            // references
+            // references et variables de definition
             this.gameObject = gameObject;
+            this.velocityTrashhold = velocityTrashhold;
 
             // Instances
             collisionBuffer = new CollisionBuffer(gameObject);

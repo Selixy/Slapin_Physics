@@ -115,6 +115,7 @@ namespace Physics
             }
         }
 
+
         // Update : teste toutes les collisions et les supprime si elles n'existent plus
         public void Update()
         {
@@ -128,7 +129,8 @@ namespace Physics
                 collisionDirection = collisionDirection.normalized * 0.01f;
 
                 // Effectuer un raycast depuis l'objet dans cette direction
-                RaycastHit2D hit = ShapCast.Cast(gameObject, collisionDirection);
+                Vector2 originOffset = new Vector2(0.0f, 0.0f);
+                RaycastHit2D hit = ShapCast.Cast(gameObject, collisionDirection, originOffset);
 
                 // Si le raycast ne touche plus aucun collider, supprimer la collision
                 if (hit.collider == null)

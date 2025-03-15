@@ -5,7 +5,7 @@ namespace Physics
     public static class ShapCast
     {
 
-        public static RaycastHit2D Cast(GameObject obj, Vector2 vectorCast, float margin = 0f)
+        public static RaycastHit2D Cast(GameObject obj, Vector2 vectorCast, Vector2 OriginOffset, float margin = 0f)
         {
             BoxCollider2D boxCollider = obj.GetComponent<BoxCollider2D>();
             if (boxCollider == null) {
