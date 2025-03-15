@@ -43,12 +43,14 @@ namespace Physics
             gravity.Update();
 
             // Apply velocity
-            RaycastHit2D hit;
-            this.isBounce = false;
-            (velocity, hit, this.isBounce) = Move.Apply(gameObject, velocity);
-            // Add collision to buffer if there is a collider
-            if(hit.collider != null) {
-                collisionBuffer.AddCollision(hit);
+            if (velocity.magnitude > velocityTrashhold) {
+                RaycastHit2D hit;
+                this.isBounce = false;
+                (velocity, hit, this.isBounce) = Move.Apply(gameObject, velocity);
+                // Add collision to buffer if there is a collider
+                if(hit.collider != null) {
+                    collisionBuffer.AddCollision(hit);
+                }
             }
 
             collisionBuffer.Update();

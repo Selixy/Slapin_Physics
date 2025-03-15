@@ -38,7 +38,7 @@ namespace Physics
                     Vector2 tangent = new Vector2(hit.normal.y, hit.normal.x);
                     // Projection trigonométrique
                     displacementAfterCollision = Vector2.Dot(displacementAfterCollision, tangent.normalized) * tangent.normalized;
- 
+                    (displacementAfterCollision, displacementBeforeCollision) = RecursiveCorection(gameObject, displacementAfterCollision, displacementBeforeCollision);
                 }
                 // Combiner le déplacement avant collision et le déplacement ajusté
                 frameVelocity = displacementBeforeCollision + displacementAfterCollision;

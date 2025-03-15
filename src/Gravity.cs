@@ -20,7 +20,7 @@ namespace Physics
 
         public void Update()
         {
-            if (isGravityActive && physic.collisionBuffer.state != State.OnGround)
+            if (isGravityActive)
             {
                 float gravityForce = -gravity * gravityFactor * Time.deltaTime;
                 physic.AddVelocity(new Vector2(0, gravityForce));
