@@ -15,8 +15,8 @@ namespace Physics
         private float velocityTrashhold = 0.01f;
 
         // Variables accessibles
-        public bool isBounce {get; private set;}
         public State state {get{return collisionBuffer.state;}}
+        public bool isBounce {get; internal set;}
         public Vector2 velocity{get; internal set;}
         public void AddVelocity(Vector2 addVelocity) { this.velocity += addVelocity; }
         public void SetVerticalVelocity(float velocity) { this.velocity = new Vector2(this.velocity.x, velocity); }
@@ -45,8 +45,7 @@ namespace Physics
             // Apply velocity
             if (velocity.magnitude > velocityTrashhold) {
                 RaycastHit2D hit;
-                this.isBounce = false;
-                (velocity, hit, this.isBounce) = Move.Apply(gameObject, velocity);
+                (velocity, hit, isBounce) = Move.Apply(gameObject, velocity);
                 // Add collision to buffer if there is a collider
                 if(hit.collider != null) {
                     collisionBuffer.AddCollision(hit);
