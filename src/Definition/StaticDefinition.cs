@@ -5,10 +5,10 @@ namespace Physics
         // definition des coefficients de friction et adherence
         public static float VerticalFactor = 1f;
 
-        public static float defaultFriction = 0.05f;
+        public static float defaultFriction = 15f;
         public static float defaultAdherence = 1f;
 
-        public static float iceFriction = 0.02f;
+        public static float iceFriction = 10f;
         public static float iceAdherence = 1f;
 
 

@@ -50,6 +50,8 @@ namespace Physics
         // Calcule la nouvelle vitesse sur un axe en fonction de la friction appliquée
         private float ComputeVelocityAxis(float currentVelocity, float friction)
         {
+            friction *= Time.deltaTime;
+
             if (currentVelocity > friction) {
                 return Mathf.Max(0, currentVelocity - friction);
             }
