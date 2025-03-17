@@ -20,6 +20,7 @@ namespace Physics
         public Vector2 velocity{get; internal set;}
         public void AddVelocity(Vector2 addVelocity) { this.velocity += addVelocity; }
         public void SetVerticalVelocity(float velocity) { this.velocity = new Vector2(this.velocity.x, velocity); }
+        public void MultiplyHorizontalVelocity(float factor) { this.velocity = new Vector2(this.velocity.x * factor, this.velocity.y); }
         public void SetVelocity(Vector2 velocity) { this.velocity = velocity; }
 
         // Constructor

@@ -8,8 +8,8 @@ namespace Physics
         public static float defaultFriction = 15f;
         public static float defaultAdherence = 1f;
 
-        public static float iceFriction = 10f;
-        public static float iceAdherence = 1f;
+        public static float iceFriction = 3f;
+        public static float iceAdherence = 0.5f;
 
 
         // definition des coefficients de dumping
